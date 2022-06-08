@@ -26,4 +26,18 @@ func TestDecodePackage(t *testing.T) {
 		t.Error("Битовая маска декодирована неверно")
 	}
 
+	if DecodePackage.DataBlocks[0].Longitude != 49.1903648 {
+
+		t.Error("Неверно декодирована долгота")
+	}
+
+	if DecodePackage.DataBlocks[0].Latitude != 55.7305664 {
+
+		t.Error("Неверно декодирована широта")
+	}
+
+	if DecodePackage.DataBlocks[0].Height != 106.0 {
+		t.Error("Неверно декодирована высота")
+	}
+
 }

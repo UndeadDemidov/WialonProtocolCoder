@@ -2,8 +2,15 @@ package Decode
 
 import (
 	"encoding/binary"
+	"math"
 )
 
+func BytesToFloat(Bytes []byte) float64 {
+
+	Uint := binary.LittleEndian.Uint64(Bytes)
+
+	return math.Float64frombits(Uint)
+}
 func Decode(BytesArray []byte) DecodePackage {
 
 	var DecodePackage DecodePackage
@@ -26,7 +33,7 @@ func Decode(BytesArray []byte) DecodePackage {
 	DecodePackage.ByteMask = binary.BigEndian.Uint32(BytesArray[Offset : Offset+4])
 	Offset = Offset + 4
 	for Index := Offset; Index < len(BytesArray); Index = Index + Offset {
-		var NewDataBlock BaseDataBlock
+		var NewDataBlock PositionInfoBlock
 		NewDataBlock.BlockType = binary.BigEndian.Uint16(BytesArray[Offset : Offset+2])
 		Offset = Offset + 2
 		NewDataBlock.BlockSize = binary.BigEndian.Uint32(BytesArray[Offset : Offset+4])
@@ -48,21 +55,17 @@ func Decode(BytesArray []byte) DecodePackage {
 
 		switch NewDataBlock.BlockName {
 		case "posinfo":
-			//Переписать
-			NewDataBlock.Block.Longitude = binary.LittleEndian.Uint32(BytesArray[Offset : Offset+8])
+			NewDataBlock.Longitude = BytesToFloat(BytesArray[Offset : Offset+8])
 			Offset = Offset + 8
-			//Переписать
-			NewDataBlock.Block.Latitude = binary.LittleEndian.Uint32(BytesArray[Offset : Offset+8])
+			NewDataBlock.Latitude = BytesToFloat(BytesArray[Offset : Offset+8])
 			Offset = Offset + 8
-			//Переписать
-			NewDataBlock.Block.Height = binary.LittleEndian.Uint32(BytesArray[Offset : Offset+8])
+			NewDataBlock.Height = BytesToFloat(BytesArray[Offset : Offset+8])
 			Offset = Offset + 8
-			NewDataBlock.Block.Speed = binary.BigEndian.Uint16(BytesArray[Offset : Offset+2])
+			NewDataBlock.Speed = binary.BigEndian.Uint16(BytesArray[Offset : Offset+2])
 			Offset = Offset + 2
-
-			NewDataBlock.Block.Course = binary.BigEndian.Uint16(BytesArray[Offset : Offset+2])
+			NewDataBlock.Course = binary.BigEndian.Uint16(BytesArray[Offset : Offset+2])
 			Offset = Offset + 2
-			NewDataBlock.Block.SatellitesCount = BytesArray[Offset]
+			NewDataBlock.SatellitesCount = BytesArray[Offset]
 			Offset = Offset + 1
 			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewDataBlock)
 
