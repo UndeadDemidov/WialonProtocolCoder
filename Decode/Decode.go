@@ -28,7 +28,7 @@ func Decode(BytesArray []byte) DecodePackage {
 		}
 	}
 
-	DecodePackage.Time = binary.BigEndian.Uint32(BytesArray[Offset : Offset+4])
+	DecodePackage.UnixTime = binary.BigEndian.Uint32(BytesArray[Offset : Offset+4])
 	Offset = Offset + 4
 	DecodePackage.ByteMask = binary.BigEndian.Uint32(BytesArray[Offset : Offset+4])
 	Offset = Offset + 4

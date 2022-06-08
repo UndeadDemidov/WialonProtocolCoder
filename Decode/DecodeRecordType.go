@@ -1,10 +1,9 @@
 package Decode
 
-type DataBlock PositionInfoBlock
 type DecodePackage struct {
 	UUID        string
 	PackageSize uint32
-	Time        uint32
+	UnixTime    uint32
 	ByteMask    uint32
 	DataBlocks  []PositionInfoBlock
 }
