@@ -2,6 +2,7 @@ package Decode
 
 import (
 	"encoding/binary"
+	"fmt"
 	"math"
 )
 
@@ -37,8 +38,10 @@ func Decode(BytesArray []byte) DecodePackage {
 		NewDataBlock.BlockType = binary.BigEndian.Uint16(BytesArray[Offset : Offset+2])
 		Offset = Offset + 2
 		NewDataBlock.BlockSize = binary.BigEndian.Uint32(BytesArray[Offset : Offset+4])
+		fmt.Println(binary.BigEndian.Uint32(BytesArray[Offset : Offset+4]))
 		Offset = Offset + 4
 		NewDataBlock.Hidden = BytesArray[Offset]
+
 		Offset = Offset + 1
 		NewDataBlock.BlockDataType = BytesArray[Offset]
 		Offset = Offset + 1
@@ -67,9 +70,9 @@ func Decode(BytesArray []byte) DecodePackage {
 			Offset = Offset + 2
 			NewDataBlock.SatellitesCount = BytesArray[Offset]
 			Offset = Offset + 1
-			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewDataBlock)
 
 		}
+		DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewDataBlock)
 	}
 	return DecodePackage
 

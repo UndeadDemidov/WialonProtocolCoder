@@ -19,4 +19,5 @@ type EncodePackage struct {
 	SPNId  []byte
 	SPNVal []byte
 	IBtn   []byte
+	GPSAlt sql.NullInt64
 }
