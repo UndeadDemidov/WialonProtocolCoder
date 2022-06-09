@@ -8,7 +8,7 @@ import (
 )
 
 func TestDecodePackage(t *testing.T) {
-	Message := "740000003230353030313731310062a048a6000000030bbb000000270102706f73696e666f000000807cb2d8c941000080ca1431c0411b0b000000000000007a015713"
+	Message := "740000003230353030313731310062a048a6000000030bbb000000270102706f73696e666f000000807cb2d8c941000080ca1431c041000000000036a640007a015713"
 	ByteMessage, _ := hex.DecodeString(Message)
 
 	DecodePackage := Decode.Decode(ByteMessage)
@@ -71,9 +71,23 @@ func TestDecodePackage(t *testing.T) {
 		t.Log("Широта", DecodePackage.DataBlocks[0].Longitude)
 	}
 
-	if DecodePackage.DataBlocks[0].Height != 11 {
+	if DecodePackage.DataBlocks[0].Height != 2843 {
 		t.Error("Высота над уровнем моря неверна")
 		t.Log("Высота над уровнем моря", DecodePackage.DataBlocks[0].Height)
+	}
+	if DecodePackage.DataBlocks[0].Speed != 122 {
+		t.Error("Скорость неверна")
+		t.Log("Скорость", DecodePackage.DataBlocks[0].Speed)
+	}
+	if DecodePackage.DataBlocks[0].Course != 343 {
+		t.Error("Курс неверен")
+		t.Log("Курс", DecodePackage.DataBlocks[0].Course)
+
+	}
+	if DecodePackage.DataBlocks[0].SatellitesCount != 19 {
+		t.Error("Количество спутников неверно")
+		t.Log("Количество спутников", DecodePackage.DataBlocks[0].SatellitesCount)
+
 	}
 
 }

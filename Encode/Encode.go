@@ -43,7 +43,7 @@ func Encode(Package EncodePackage, TimeOffset uint32) string {
 	binary.LittleEndian.PutUint64(Latitude, FloatToUint(543304085))
 	BufferPackage.Write(Latitude)
 	Height := make([]byte, 8) //Временное хранилище высоты
-	binary.LittleEndian.PutUint64(Height, 2843)
+	binary.LittleEndian.PutUint64(Height, FloatToUint(2843))
 	BufferPackage.Write(Height)
 	Speed := make([]byte, 2) //Временное хранилище скорости
 	binary.BigEndian.PutUint16(Speed, 122)
