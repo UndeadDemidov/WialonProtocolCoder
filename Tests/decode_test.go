@@ -8,7 +8,7 @@ import (
 )
 
 func TestDecodePackage(t *testing.T) {
-	Message := "3f0000003230353030313731310062a048a6000000030bbb000000270102706f73696e666f000000807cb2d8c941000080ca1431c041000000000036a640007a015713"
+	Message := "3f0000003230353030313731310062a048a6000000030bbb270000000102706f73696e666f000000807cb2d8c941000080ca1431c041000000000036a640007a015713"
 	ByteMessage, _ := hex.DecodeString(Message)
 
 	DecodePackage := Decode.Decode(ByteMessage)
@@ -69,7 +69,7 @@ func TestDecodePackage(t *testing.T) {
 
 	if DecodePackage.DataBlocks[0].Latitude != 543304085 {
 		t.Error("Широта  задана неверно")
-		t.Log("Широта", DecodePackage.DataBlocks[0].Longitude)
+		t.Log("Широта", DecodePackage.DataBlocks[0].Latitude)
 	}
 
 	if DecodePackage.DataBlocks[0].Height != 2843 {

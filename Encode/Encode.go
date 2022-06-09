@@ -25,33 +25,42 @@ func Encode(Package EncodePackage, TimeOffset uint32) string {
 	BlockType := make([]byte, 2)
 	binary.BigEndian.PutUint16(BlockType, 3003)
 	BufferPackage.Write(BlockType)
-	BlockSize := make([]byte, 4) //Временной хранилище размера блока
-	binary.BigEndian.PutUint32(BlockSize, 39)
-	BufferPackage.Write(BlockSize)
-	BufferPackage.WriteByte(1) //Записываем атребут скрытости
-	BufferPackage.WriteByte(2) //Записываем тип данных блока
-
-	BufferPackage.WriteString("posinfo") //Записываем Имя блока
-	BufferPackage.WriteByte(0x0)
+	//Начало записи блока posinfo
+	BlockBuffer := new(bytes.Buffer)
+	BlockBuffer.WriteByte(1)           //Записываем атрибут скрытости
+	BlockBuffer.WriteByte(2)           //Записываем тип данных блока
+	BlockBuffer.WriteString("posinfo") //Записываем Имя блока
+	BlockBuffer.WriteByte(0x0)
 	Longitude := make([]byte, 8) //Временное хранилище долготы
 	binary.LittleEndian.PutUint64(Longitude, FloatToUint(867263737))
-	BufferPackage.Write(Longitude)
+	BlockBuffer.Write(Longitude)
 	Latitude := make([]byte, 8) //Временное хранилище широты
 	binary.LittleEndian.PutUint64(Latitude, FloatToUint(543304085))
-	BufferPackage.Write(Latitude)
+	BlockBuffer.Write(Latitude)
 	Height := make([]byte, 8) //Временное хранилище высоты
 	binary.LittleEndian.PutUint64(Height, FloatToUint(2843))
-	BufferPackage.Write(Height)
+	BlockBuffer.Write(Height)
 	Speed := make([]byte, 2) //Временное хранилище скорости
 	binary.BigEndian.PutUint16(Speed, 122)
-	BufferPackage.Write(Speed)
+	BlockBuffer.Write(Speed)
 	Course := make([]byte, 2) //Временное хранилище курса
 	binary.BigEndian.PutUint16(Course, 343)
-	BufferPackage.Write(Course)
-	BufferPackage.WriteByte(19)          //Записываем количество спутников
-	PackageLength := BufferPackage.Len() //Получаем длину пакета
+	BlockBuffer.Write(Course)
+	BlockBuffer.WriteByte(19) //Записываем количество спутников
+	//Запись длинны блока
+	BlockLength := BlockBuffer.Len()
+	BlockString := BlockBuffer.String()
+	BlockBuffer.Reset()
+	BlockSize := make([]byte, 4)
+
+	binary.LittleEndian.PutUint32(BlockSize, uint32(BlockLength))
+
+	BufferPackage.Write(BlockSize)
+	BufferPackage.WriteString(BlockString)
+	//Запись длинны пакета
+	PackageLength := BufferPackage.Len()
 	PackageString := BufferPackage.String()
-	BufferPackage.Reset() //Обнуляем буфер и перезаписываем пакет с его длинной в начале
+	BufferPackage.Reset()
 	PackageSize := make([]byte, 4)
 	binary.LittleEndian.PutUint32(PackageSize, uint32(PackageLength))
 	BufferPackage.Write(PackageSize)

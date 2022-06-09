@@ -2,7 +2,6 @@ package Decode
 
 import (
 	"encoding/binary"
-	"fmt"
 	"math"
 )
 
@@ -37,8 +36,7 @@ func Decode(BytesArray []byte) DecodePackage {
 		var NewDataBlock PositionInfoBlock
 		NewDataBlock.BlockType = binary.BigEndian.Uint16(BytesArray[Offset : Offset+2])
 		Offset = Offset + 2
-		NewDataBlock.BlockSize = binary.BigEndian.Uint32(BytesArray[Offset : Offset+4])
-		fmt.Println(binary.BigEndian.Uint32(BytesArray[Offset : Offset+4]))
+		NewDataBlock.BlockSize = binary.LittleEndian.Uint32(BytesArray[Offset : Offset+4])
 		Offset = Offset + 4
 		NewDataBlock.Hidden = BytesArray[Offset]
 
