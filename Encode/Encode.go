@@ -13,9 +13,6 @@ func FloatToUint(Number float64) uint64 {
 }
 func Encode(Package EncodePackage, TimeOffset uint32) string {
 	BufferPackage := new(bytes.Buffer)                          //Буфер закодированого пакета
-	PackageSize := make([]byte, 4)                              //Временное хранилище для размера пакета
-	binary.LittleEndian.PutUint32(PackageSize, uint32(116))     //Записывается верно , но высчитывается неверно
-	BufferPackage.Write(PackageSize)                            //Записываем размер блока
 	BufferPackage.WriteString(Package.UID)                      //Записываем UID
 	BufferPackage.WriteByte(0x0)                                //Записываем окончание UID
 	UnixTime := make([]byte, 4)                                 //Временное хранилище времени
@@ -51,7 +48,14 @@ func Encode(Package EncodePackage, TimeOffset uint32) string {
 	Course := make([]byte, 2) //Временное хранилище курса
 	binary.BigEndian.PutUint16(Course, 343)
 	BufferPackage.Write(Course)
-	BufferPackage.WriteByte(19) //Записываем количество спутников
+	BufferPackage.WriteByte(19)          //Записываем количество спутников
+	PackageLength := BufferPackage.Len() //Получаем длину пакета
+	PackageString := BufferPackage.String()
+	BufferPackage.Reset() //Обнуляем буфер и перезаписываем пакет с его длинной в начале
+	PackageSize := make([]byte, 4)
+	binary.LittleEndian.PutUint32(PackageSize, uint32(PackageLength))
+	BufferPackage.Write(PackageSize)
+	BufferPackage.WriteString(PackageString)
 
 	return hex.EncodeToString(BufferPackage.Bytes())
 

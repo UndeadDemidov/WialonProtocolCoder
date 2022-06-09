@@ -8,12 +8,12 @@ import (
 )
 
 func TestDecodePackage(t *testing.T) {
-	Message := "740000003230353030313731310062a048a6000000030bbb000000270102706f73696e666f000000807cb2d8c941000080ca1431c041000000000036a640007a015713"
+	Message := "3f0000003230353030313731310062a048a6000000030bbb000000270102706f73696e666f000000807cb2d8c941000080ca1431c041000000000036a640007a015713"
 	ByteMessage, _ := hex.DecodeString(Message)
 
 	DecodePackage := Decode.Decode(ByteMessage)
 
-	if DecodePackage.PackageSize != 116 {
+	if DecodePackage.PackageSize != 63 {
 
 		t.Error("Размер пакета декодировался некорректно")
 		t.Log("Размер пакета", DecodePackage.PackageSize)
@@ -21,6 +21,7 @@ func TestDecodePackage(t *testing.T) {
 
 	if DecodePackage.UUID != "205001711" {
 		t.Error("UID декодирован некорректно")
+		t.Log("UID", DecodePackage.UUID)
 
 	}
 	if DecodePackage.UnixTime != 1654671526 {
