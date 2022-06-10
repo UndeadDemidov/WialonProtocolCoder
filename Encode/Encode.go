@@ -32,21 +32,21 @@ func Encode(Package EncodePackage, TimeOffset uint32) string {
 	BlockBuffer.WriteString("posinfo") //Записываем Имя блока
 	BlockBuffer.WriteByte(0x0)
 	Longitude := make([]byte, 8) //Временное хранилище долготы
-	binary.LittleEndian.PutUint64(Longitude, FloatToUint(867263737))
+	binary.LittleEndian.PutUint64(Longitude, FloatToUint(float64(Package.Lon.Int64)))
 	BlockBuffer.Write(Longitude)
 	Latitude := make([]byte, 8) //Временное хранилище широты
-	binary.LittleEndian.PutUint64(Latitude, FloatToUint(543304085))
+	binary.LittleEndian.PutUint64(Latitude, FloatToUint(float64(Package.Lat.Int64)))
 	BlockBuffer.Write(Latitude)
 	Height := make([]byte, 8) //Временное хранилище высоты
-	binary.LittleEndian.PutUint64(Height, FloatToUint(2843))
+	binary.LittleEndian.PutUint64(Height, FloatToUint(float64(Package.GPSAlt.Int64)))
 	BlockBuffer.Write(Height)
 	Speed := make([]byte, 2) //Временное хранилище скорости
-	binary.BigEndian.PutUint16(Speed, 122)
+	binary.BigEndian.PutUint16(Speed, uint16(Package.Speed.Int64))
 	BlockBuffer.Write(Speed)
 	Course := make([]byte, 2) //Временное хранилище курса
-	binary.BigEndian.PutUint16(Course, 343)
+	binary.BigEndian.PutUint16(Course, uint16(Package.Dir.Int64))
 	BlockBuffer.Write(Course)
-	BlockBuffer.WriteByte(19) //Записываем количество спутников
+	BlockBuffer.WriteByte(byte(Package.Sat.Int64)) //Записываем количество спутников
 	//Запись длинны блока
 	BlockLength := BlockBuffer.Len()
 	BlockString := BlockBuffer.String()
