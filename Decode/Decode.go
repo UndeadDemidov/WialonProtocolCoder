@@ -32,21 +32,21 @@ func Decode(BytesArray []byte) DecodePackage {
 	Offset = Offset + 4
 	DecodePackage.ByteMask = binary.BigEndian.Uint32(BytesArray[Offset : Offset+4])
 	Offset = Offset + 4
-	for Index := Offset; Index < len(BytesArray); Index = Index + Offset {
-		var NewDataBlock PositionInfoBlock
-		NewDataBlock.BlockType = binary.BigEndian.Uint16(BytesArray[Offset : Offset+2])
+	for Offset < len(BytesArray) {
+		var NewBaseBlock BaseBlock
+		NewBaseBlock.BlockType = binary.BigEndian.Uint16(BytesArray[Offset : Offset+2])
 		Offset = Offset + 2
-		NewDataBlock.BlockSize = binary.LittleEndian.Uint32(BytesArray[Offset : Offset+4])
+		NewBaseBlock.BlockSize = binary.LittleEndian.Uint32(BytesArray[Offset : Offset+4])
 		Offset = Offset + 4
-		NewDataBlock.Hidden = BytesArray[Offset]
+		NewBaseBlock.Hidden = BytesArray[Offset]
 
 		Offset = Offset + 1
-		NewDataBlock.BlockDataType = BytesArray[Offset]
+		NewBaseBlock.BlockDataType = BytesArray[Offset]
 		Offset = Offset + 1
 		for Index := Offset; Index < len(BytesArray); Index++ {
 
 			if BytesArray[Index] == 0x0 {
-				NewDataBlock.BlockName = string(BytesArray[Offset:Index])
+				NewBaseBlock.BlockName = string(BytesArray[Offset:Index])
 				Offset = Index + 1
 				break
 
@@ -54,23 +54,34 @@ func Decode(BytesArray []byte) DecodePackage {
 
 		}
 
-		switch NewDataBlock.BlockName {
+		switch NewBaseBlock.BlockName {
 		case "posinfo":
-			NewDataBlock.Longitude = BytesToFloat(BytesArray[Offset : Offset+8])
-			Offset = Offset + 8
-			NewDataBlock.Latitude = BytesToFloat(BytesArray[Offset : Offset+8])
-			Offset = Offset + 8
-			NewDataBlock.Height = BytesToFloat(BytesArray[Offset : Offset+8])
-			Offset = Offset + 8
-			NewDataBlock.Speed = binary.BigEndian.Uint16(BytesArray[Offset : Offset+2])
-			Offset = Offset + 2
-			NewDataBlock.Course = binary.BigEndian.Uint16(BytesArray[Offset : Offset+2])
-			Offset = Offset + 2
-			NewDataBlock.SatellitesCount = BytesArray[Offset]
-			Offset = Offset + 1
 
+			NewPositionInfoBlock := PositionInfoBlock{BaseBlock: NewBaseBlock}
+
+			NewPositionInfoBlock.Longitude = BytesToFloat(BytesArray[Offset : Offset+8])
+			Offset = Offset + 8
+			NewPositionInfoBlock.Latitude = BytesToFloat(BytesArray[Offset : Offset+8])
+			Offset = Offset + 8
+			NewPositionInfoBlock.Height = BytesToFloat(BytesArray[Offset : Offset+8])
+			Offset = Offset + 8
+			NewPositionInfoBlock.Speed = binary.BigEndian.Uint16(BytesArray[Offset : Offset+2])
+			Offset = Offset + 2
+			NewPositionInfoBlock.Course = binary.BigEndian.Uint16(BytesArray[Offset : Offset+2])
+			Offset = Offset + 2
+			NewPositionInfoBlock.SatellitesCount = BytesArray[Offset]
+			Offset = Offset + 1
+			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewPositionInfoBlock)
+			break
+		case "pwr_ext":
+
+			NewSensorsInfoBlock := SensorsInfoBlock{BaseBlock: NewBaseBlock}
+			NewSensorsInfoBlock.Value = BytesToFloat(BytesArray[Offset : Offset+8])
+			Offset = Offset + 8
+			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
+			break
 		}
-		DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewDataBlock)
+
 	}
 	return DecodePackage
 
