@@ -25,4 +25,5 @@ type EncodePackage struct {
 	Mileage sql.NullInt64
 	BatLife sql.NullInt64
 	TImp    sql.NullInt64
+	Uboard  sql.NullInt64
 }

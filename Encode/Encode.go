@@ -160,6 +160,27 @@ func Encode(Package EncodePackage, TimeOffset uint32) string {
 	BufferPackage.Write(BlockSize)
 	BufferPackage.Write(BlockBytes)
 
+	//Блок с напряжением
+	BlockBuffer.Reset()
+	BlockBuffer.WriteByte(1)          //Записываем атрибут скрытости
+	BlockBuffer.WriteByte(4)          //Записываем тип данных блока
+	BlockBuffer.WriteString("Uboard") //Записываем Имя блока
+	BlockBuffer.WriteByte(0x0)
+	Value = make([]byte, 8) //Временное хранилище Напряжения
+	binary.LittleEndian.PutUint64(Value, FloatToUint(float64(Package.Uboard.Int64)*0.1))
+	BlockBuffer.Write(Value)
+	//Запись длинны блока
+	BlockLength = BlockBuffer.Len()
+	BlockBytes = BlockBuffer.Bytes()
+	BlockBuffer.Reset()
+	BlockType = make([]byte, 2)
+	binary.BigEndian.PutUint16(BlockType, 3003)
+	BufferPackage.Write(BlockType)
+	BlockSize = make([]byte, 4)
+	binary.BigEndian.PutUint32(BlockSize, uint32(BlockLength))
+	BufferPackage.Write(BlockSize)
+	BufferPackage.Write(BlockBytes)
+
 	//Запись длинны пакета
 	PackageLength := BufferPackage.Len()
 	PackageString := BufferPackage.String()

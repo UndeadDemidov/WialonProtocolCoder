@@ -117,6 +117,15 @@ func Decode(BytesArray []byte) DecodePackage {
 			Offset = Offset + 4
 			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
 			break
+
+		case "Uboard":
+
+			NewSensorsInfoBlock := AdditionalValueBlock[float64]{BaseBlock: NewBaseBlock}
+			NewSensorsInfoBlock.Value = BytesToFloat(BytesArray[Offset : Offset+8])
+			fmt.Println(NewSensorsInfoBlock.Value)
+			Offset = Offset + 8
+			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
+			break
 		}
 
 	}
