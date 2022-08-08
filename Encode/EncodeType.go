@@ -23,4 +23,6 @@ type EncodePackage struct {
 	Unval0  sql.NullInt64
 	Unval1  sql.NullInt64
 	Mileage sql.NullInt64
+	BatLife sql.NullInt64
+	TImp    sql.NullInt64
 }

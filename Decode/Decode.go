@@ -40,7 +40,6 @@ func Decode(BytesArray []byte) DecodePackage {
 		NewBaseBlock.BlockSize = binary.BigEndian.Uint32(BytesArray[Offset : Offset+4])
 		Offset = Offset + 4
 		NewBaseBlock.Hidden = BytesArray[Offset]
-
 		Offset = Offset + 1
 		NewBaseBlock.BlockDataType = BytesArray[Offset]
 		Offset = Offset + 1
@@ -98,6 +97,24 @@ func Decode(BytesArray []byte) DecodePackage {
 			NewSensorsInfoBlock.Value = BytesToFloat(BytesArray[Offset : Offset+8])
 			fmt.Println(NewSensorsInfoBlock.Value)
 			Offset = Offset + 8
+			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
+			break
+
+		case "batlife":
+
+			NewSensorsInfoBlock := AdditionalValueBlock[uint32]{BaseBlock: NewBaseBlock}
+			NewSensorsInfoBlock.Value = binary.BigEndian.Uint32(BytesArray[Offset : Offset+4])
+			fmt.Println(NewSensorsInfoBlock.Value)
+			Offset = Offset + 4
+			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
+			break
+
+		case "TImp":
+
+			NewSensorsInfoBlock := AdditionalValueBlock[uint32]{BaseBlock: NewBaseBlock}
+			NewSensorsInfoBlock.Value = binary.BigEndian.Uint32(BytesArray[Offset : Offset+4])
+			fmt.Println(NewSensorsInfoBlock.Value)
+			Offset = Offset + 4
 			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
 			break
 		}

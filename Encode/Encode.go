@@ -119,6 +119,47 @@ func Encode(Package EncodePackage, TimeOffset uint32) string {
 	BufferPackage.Write(BlockSize)
 	BufferPackage.Write(BlockBytes)
 
+	//Блок с уровнем батареи
+	BlockBuffer.Reset()
+	BlockBuffer.WriteByte(1)           //Записываем атрибут скрытости
+	BlockBuffer.WriteByte(3)           //Записываем тип данных блока
+	BlockBuffer.WriteString("batlife") //Записываем Имя блока
+	BlockBuffer.WriteByte(0x0)
+	Value = make([]byte, 4) //Временное хранилище уровня заряда
+	binary.BigEndian.PutUint32(Value, uint32(Package.BatLife.Int64))
+	BlockBuffer.Write(Value)
+	//Запись длинны блока
+	BlockLength = BlockBuffer.Len()
+	BlockBytes = BlockBuffer.Bytes()
+	BlockBuffer.Reset()
+	BlockType = make([]byte, 2)
+	binary.BigEndian.PutUint16(BlockType, 3003)
+	BufferPackage.Write(BlockType)
+	BlockSize = make([]byte, 4)
+	binary.BigEndian.PutUint32(BlockSize, uint32(BlockLength))
+	BufferPackage.Write(BlockSize)
+	BufferPackage.Write(BlockBytes)
+	//Блок с оборотами
+	BlockBuffer.Reset()
+	BlockBuffer.WriteByte(1)        //Записываем атрибут скрытости
+	BlockBuffer.WriteByte(3)        //Записываем тип данных блока
+	BlockBuffer.WriteString("TImp") //Записываем Имя блока
+	BlockBuffer.WriteByte(0x0)
+	Value = make([]byte, 4) //Временное хранилище оборотов
+	binary.BigEndian.PutUint32(Value, uint32(Package.TImp.Int64))
+	BlockBuffer.Write(Value)
+	//Запись длинны блока
+	BlockLength = BlockBuffer.Len()
+	BlockBytes = BlockBuffer.Bytes()
+	BlockBuffer.Reset()
+	BlockType = make([]byte, 2)
+	binary.BigEndian.PutUint16(BlockType, 3003)
+	BufferPackage.Write(BlockType)
+	BlockSize = make([]byte, 4)
+	binary.BigEndian.PutUint32(BlockSize, uint32(BlockLength))
+	BufferPackage.Write(BlockSize)
+	BufferPackage.Write(BlockBytes)
+
 	//Запись длинны пакета
 	PackageLength := BufferPackage.Len()
 	PackageString := BufferPackage.String()
