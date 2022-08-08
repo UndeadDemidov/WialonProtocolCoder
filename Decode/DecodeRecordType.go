@@ -23,7 +23,7 @@ type PositionInfoBlock struct {
 	Course          uint16
 	SatellitesCount byte
 }
-type SensorsInfoBlock struct {
+type AdditionalValueBlock struct {
 	BaseBlock
 	Value float64
 }

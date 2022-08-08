@@ -2,6 +2,7 @@ package Decode
 
 import (
 	"encoding/binary"
+	"fmt"
 	"math"
 )
 
@@ -53,7 +54,7 @@ func Decode(BytesArray []byte) DecodePackage {
 			}
 
 		}
-
+		fmt.Println(NewBaseBlock.BlockName)
 		switch NewBaseBlock.BlockName {
 		case "posinfo":
 
@@ -73,10 +74,20 @@ func Decode(BytesArray []byte) DecodePackage {
 			Offset = Offset + 1
 			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewPositionInfoBlock)
 			break
-		case "pwr_ext":
+		case "adc1":
 
-			NewSensorsInfoBlock := SensorsInfoBlock{BaseBlock: NewBaseBlock}
+			NewSensorsInfoBlock := AdditionalValueBlock{BaseBlock: NewBaseBlock}
 			NewSensorsInfoBlock.Value = BytesToFloat(BytesArray[Offset : Offset+8])
+			fmt.Println(NewSensorsInfoBlock.Value)
+			Offset = Offset + 8
+			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
+			break
+
+		case "adc2":
+
+			NewSensorsInfoBlock := AdditionalValueBlock{BaseBlock: NewBaseBlock}
+			NewSensorsInfoBlock.Value = BytesToFloat(BytesArray[Offset : Offset+8])
+			fmt.Println(NewSensorsInfoBlock.Value)
 			Offset = Offset + 8
 			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
 			break

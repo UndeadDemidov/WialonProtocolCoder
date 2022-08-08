@@ -8,11 +8,9 @@ import (
 )
 
 func TestDecodePackage(t *testing.T) {
-	Message := "74000000333533393736303133343435343835004B0BFB70000000030BBB000000270102706F73696E666F00A027AFDF5D9848403AC7253383DD4B400000000000805A40003601460B0BBB0000001200047077725F657874002B87ё16D9CE973B400BBB00000011010361766C5F696E707574730000000001"
-	ByteMessage, _ := hex.DecodeString(Message)
 
-	DecodePackage := Decode.Decode(ByteMessage)
-
+	Message, _ := hex.DecodeString("690000003432333837363139370062a048a6000000030bbb270000000102706f73696e666f002b8b1de87cae554003e962d34a2a4b409a9999999999f13f000000000b0bbb0f000000010461646331000000000000804b400bbb0f000000010461646332006766666666a64640")
+	DecodePackage := Decode.Decode(Message)
 	if DecodePackage.PackageSize != 116 {
 
 		t.Error("Размер пакета декодировался некорректно")
@@ -84,10 +82,10 @@ func TestDecodePackage(t *testing.T) {
 				t.Log("Количество спутников", DataBlock.(Decode.PositionInfoBlock).SatellitesCount)
 			}
 
-		case Decode.SensorsInfoBlock:
-			if DataBlock.(Decode.SensorsInfoBlock).BlockName != "pwr_ext" {
+		case Decode.AdditionalValueBlock:
+			if DataBlock.(Decode.AdditionalValueBlock).BlockName != "adc1" {
 				t.Error("Имя блока  задано неверно")
-				t.Log("Имя блока", DataBlock.(Decode.SensorsInfoBlock).BlockName)
+				t.Log("Имя блока", DataBlock.(Decode.AdditionalValueBlock).BlockName)
 			}
 		}
 

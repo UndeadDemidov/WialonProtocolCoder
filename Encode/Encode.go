@@ -52,11 +52,52 @@ func Encode(Package EncodePackage, TimeOffset uint32) string {
 	BlockString := BlockBuffer.String()
 	BlockBuffer.Reset()
 	BlockSize := make([]byte, 4)
-
 	binary.LittleEndian.PutUint32(BlockSize, uint32(BlockLength))
-
 	BufferPackage.Write(BlockSize)
 	BufferPackage.WriteString(BlockString)
+
+	//Блок с первым сенсором
+	BlockBuffer.Reset()
+	BlockBuffer.WriteByte(1)        //Записываем атрибут скрытости
+	BlockBuffer.WriteByte(4)        //Записываем тип данных блока
+	BlockBuffer.WriteString("adc1") //Записываем Имя блока
+	BlockBuffer.WriteByte(0x0)
+	Sensor := make([]byte, 8) //Временное хранилище датчика1
+	binary.LittleEndian.PutUint64(Sensor, FloatToUint(float64(Package.Unval0.Int64)*0.1))
+	BlockBuffer.Write(Sensor)
+	//Запись длинны блока
+	BlockLength = BlockBuffer.Len()
+	BlockBytes := BlockBuffer.Bytes()
+	BlockBuffer.Reset()
+	BlockType = make([]byte, 2)
+	binary.BigEndian.PutUint16(BlockType, 3003)
+	BufferPackage.Write(BlockType)
+	BlockSize = make([]byte, 4)
+	binary.LittleEndian.PutUint32(BlockSize, uint32(BlockLength))
+	BufferPackage.Write(BlockSize)
+	BufferPackage.Write(BlockBytes)
+
+	//Блок с вторым сенсором
+	BlockBuffer.Reset()
+	BlockBuffer.WriteByte(1)        //Записываем атрибут скрытости
+	BlockBuffer.WriteByte(4)        //Записываем тип данных блока
+	BlockBuffer.WriteString("adc2") //Записываем Имя блока
+	BlockBuffer.WriteByte(0x0)
+	Sensor = make([]byte, 8) //Временное хранилище датчика2
+	binary.LittleEndian.PutUint64(Sensor, FloatToUint(float64(Package.Unval1.Int64)*0.1))
+	BlockBuffer.Write(Sensor)
+	//Запись длинны блока
+	BlockLength = BlockBuffer.Len()
+	BlockBytes = BlockBuffer.Bytes()
+	BlockBuffer.Reset()
+	BlockType = make([]byte, 2)
+	binary.BigEndian.PutUint16(BlockType, 3003)
+	BufferPackage.Write(BlockType)
+	BlockSize = make([]byte, 4)
+	binary.LittleEndian.PutUint32(BlockSize, uint32(BlockLength))
+	BufferPackage.Write(BlockSize)
+	BufferPackage.Write(BlockBytes)
+
 	//Запись длинны пакета
 	PackageLength := BufferPackage.Len()
 	PackageString := BufferPackage.String()
@@ -65,7 +106,6 @@ func Encode(Package EncodePackage, TimeOffset uint32) string {
 	binary.LittleEndian.PutUint32(PackageSize, uint32(PackageLength))
 	BufferPackage.Write(PackageSize)
 	BufferPackage.WriteString(PackageString)
-
 	return hex.EncodeToString(BufferPackage.Bytes())
 
 }
