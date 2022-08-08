@@ -39,7 +39,7 @@ func TestDecodePackage(t *testing.T) {
 				t.Error("Тип блока декодирован неверно")
 				t.Log("Тип блока", DataBlock.(Decode.PositionInfoBlock).BlockType)
 			}
-			if DataBlock.(Decode.PositionInfoBlock).BlockSize != 39 {
+			if DataBlock.(Decode.PositionInfoBlock).BlockSize != 391 {
 				t.Error("Размер блока задан неверно")
 				t.Log("Размер блока", DataBlock.(Decode.PositionInfoBlock).BlockSize)
 			}
