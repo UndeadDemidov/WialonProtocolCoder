@@ -26,4 +26,5 @@ type EncodePackage struct {
 	BatLife sql.NullInt64
 	TImp    sql.NullInt64
 	Uboard  sql.NullInt64
+	CLLS1   sql.NullInt64
 }
