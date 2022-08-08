@@ -76,19 +76,19 @@ func Decode(BytesArray []byte) DecodePackage {
 			break
 		case "adc1":
 
-			NewSensorsInfoBlock := AdditionalValueBlock{BaseBlock: NewBaseBlock}
-			NewSensorsInfoBlock.Value = BytesToFloat(BytesArray[Offset : Offset+8])
+			NewSensorsInfoBlock := AdditionalValueBlock[uint32]{BaseBlock: NewBaseBlock}
+			NewSensorsInfoBlock.Value = binary.BigEndian.Uint32(BytesArray[Offset : Offset+4])
 			fmt.Println(NewSensorsInfoBlock.Value)
-			Offset = Offset + 8
+			Offset = Offset + 4
 			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
 			break
 
 		case "adc2":
 
-			NewSensorsInfoBlock := AdditionalValueBlock{BaseBlock: NewBaseBlock}
-			NewSensorsInfoBlock.Value = BytesToFloat(BytesArray[Offset : Offset+8])
+			NewSensorsInfoBlock := AdditionalValueBlock[uint32]{BaseBlock: NewBaseBlock}
+			NewSensorsInfoBlock.Value = binary.BigEndian.Uint32(BytesArray[Offset : Offset+4])
 			fmt.Println(NewSensorsInfoBlock.Value)
-			Offset = Offset + 8
+			Offset = Offset + 4
 			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
 			break
 		}

@@ -52,7 +52,7 @@ func Encode(Package EncodePackage, TimeOffset uint32) string {
 	BlockString := BlockBuffer.String()
 	BlockBuffer.Reset()
 	BlockSize := make([]byte, 4)
-	binary.LittleEndian.PutUint32(BlockSize, uint32(BlockLength))
+	binary.BigEndian.PutUint32(BlockSize, uint32(BlockLength))
 	BufferPackage.Write(BlockSize)
 	BufferPackage.WriteString(BlockString)
 
@@ -62,8 +62,8 @@ func Encode(Package EncodePackage, TimeOffset uint32) string {
 	BlockBuffer.WriteByte(4)        //Записываем тип данных блока
 	BlockBuffer.WriteString("adc1") //Записываем Имя блока
 	BlockBuffer.WriteByte(0x0)
-	Sensor := make([]byte, 8) //Временное хранилище датчика1
-	binary.LittleEndian.PutUint64(Sensor, FloatToUint(float64(Package.Unval0.Int64)*0.1))
+	Sensor := make([]byte, 4) //Временное хранилище датчика1
+	binary.BigEndian.PutUint32(Sensor, uint32(Package.Unval0.Int64))
 	BlockBuffer.Write(Sensor)
 	//Запись длинны блока
 	BlockLength = BlockBuffer.Len()
@@ -73,7 +73,7 @@ func Encode(Package EncodePackage, TimeOffset uint32) string {
 	binary.BigEndian.PutUint16(BlockType, 3003)
 	BufferPackage.Write(BlockType)
 	BlockSize = make([]byte, 4)
-	binary.LittleEndian.PutUint32(BlockSize, uint32(BlockLength))
+	binary.BigEndian.PutUint32(BlockSize, uint32(BlockLength))
 	BufferPackage.Write(BlockSize)
 	BufferPackage.Write(BlockBytes)
 
@@ -83,8 +83,8 @@ func Encode(Package EncodePackage, TimeOffset uint32) string {
 	BlockBuffer.WriteByte(4)        //Записываем тип данных блока
 	BlockBuffer.WriteString("adc2") //Записываем Имя блока
 	BlockBuffer.WriteByte(0x0)
-	Sensor = make([]byte, 8) //Временное хранилище датчика2
-	binary.LittleEndian.PutUint64(Sensor, FloatToUint(float64(Package.Unval1.Int64)*0.1))
+	Sensor = make([]byte, 4) //Временное хранилище датчика2
+	binary.BigEndian.PutUint32(Sensor, uint32(Package.Unval1.Int64))
 	BlockBuffer.Write(Sensor)
 	//Запись длинны блока
 	BlockLength = BlockBuffer.Len()
@@ -94,7 +94,7 @@ func Encode(Package EncodePackage, TimeOffset uint32) string {
 	binary.BigEndian.PutUint16(BlockType, 3003)
 	BufferPackage.Write(BlockType)
 	BlockSize = make([]byte, 4)
-	binary.LittleEndian.PutUint32(BlockSize, uint32(BlockLength))
+	binary.BigEndian.PutUint32(BlockSize, uint32(BlockLength))
 	BufferPackage.Write(BlockSize)
 	BufferPackage.Write(BlockBytes)
 
