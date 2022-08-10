@@ -48,14 +48,29 @@ func Decode(BytesArray []byte) DecodePackage {
 			if BytesArray[Index] == 0x0 {
 				NewBaseBlock.BlockName = string(BytesArray[Offset:Index])
 				Offset = Index + 1
+				fmt.Println("Имя блока", NewBaseBlock.BlockName)
 				break
 
 			}
 
 		}
-		fmt.Println(NewBaseBlock.BlockName)
-		switch NewBaseBlock.BlockName {
-		case "posinfo":
+		fmt.Println("Тип блока", NewBaseBlock.BlockDataType)
+		switch NewBaseBlock.BlockDataType {
+		case 0x01:
+			NewSensorsInfoBlock := AdditionalValueBlock[string]{BaseBlock: NewBaseBlock}
+			for Index := Offset; Index < len(BytesArray); Index++ {
+
+				if BytesArray[Index] == 0x0 {
+					NewSensorsInfoBlock.Value = string(BytesArray[Offset:Index])
+					Offset = Index + 1
+					break
+
+				}
+			}
+
+			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
+			break
+		case 0x02:
 
 			NewPositionInfoBlock := PositionInfoBlock{BaseBlock: NewBaseBlock}
 
@@ -73,68 +88,22 @@ func Decode(BytesArray []byte) DecodePackage {
 			Offset = Offset + 1
 			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewPositionInfoBlock)
 			break
-		case "adc1":
-
+		case 0x04:
 			NewSensorsInfoBlock := AdditionalValueBlock[float64]{BaseBlock: NewBaseBlock}
 			NewSensorsInfoBlock.Value = BytesToFloat(BytesArray[Offset : Offset+8])
-			fmt.Println(NewSensorsInfoBlock.Value)
+
 			Offset = Offset + 8
 			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
 			break
 
-		case "adc2":
-
-			NewSensorsInfoBlock := AdditionalValueBlock[float64]{BaseBlock: NewBaseBlock}
-			NewSensorsInfoBlock.Value = BytesToFloat(BytesArray[Offset : Offset+8])
-			fmt.Println(NewSensorsInfoBlock.Value)
-			Offset = Offset + 8
-			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
-			break
-
-		case "mileage":
-
-			NewSensorsInfoBlock := AdditionalValueBlock[float64]{BaseBlock: NewBaseBlock}
-			NewSensorsInfoBlock.Value = BytesToFloat(BytesArray[Offset : Offset+8])
-			fmt.Println(NewSensorsInfoBlock.Value)
-			Offset = Offset + 8
-			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
-			break
-
-		case "batlife":
-
+		case 0x03:
 			NewSensorsInfoBlock := AdditionalValueBlock[uint32]{BaseBlock: NewBaseBlock}
 			NewSensorsInfoBlock.Value = binary.BigEndian.Uint32(BytesArray[Offset : Offset+4])
-			fmt.Println(NewSensorsInfoBlock.Value)
+
 			Offset = Offset + 4
 			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
 			break
 
-		case "TImp":
-
-			NewSensorsInfoBlock := AdditionalValueBlock[uint32]{BaseBlock: NewBaseBlock}
-			NewSensorsInfoBlock.Value = binary.BigEndian.Uint32(BytesArray[Offset : Offset+4])
-			fmt.Println(NewSensorsInfoBlock.Value)
-			Offset = Offset + 4
-			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
-			break
-
-		case "Uboard":
-
-			NewSensorsInfoBlock := AdditionalValueBlock[float64]{BaseBlock: NewBaseBlock}
-			NewSensorsInfoBlock.Value = BytesToFloat(BytesArray[Offset : Offset+8])
-			fmt.Println(NewSensorsInfoBlock.Value)
-			Offset = Offset + 8
-			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
-			break
-
-		case "CLLS1":
-
-			NewSensorsInfoBlock := AdditionalValueBlock[uint32]{BaseBlock: NewBaseBlock}
-			NewSensorsInfoBlock.Value = binary.BigEndian.Uint32(BytesArray[Offset : Offset+4])
-			fmt.Println(NewSensorsInfoBlock.Value)
-			Offset = Offset + 4
-			DecodePackage.DataBlocks = append(DecodePackage.DataBlocks, NewSensorsInfoBlock)
-			break
 		}
 
 	}
